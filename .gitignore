@@ -1,7 +1,7 @@
 # Bundler cache
 .bundle
 vendor
-Gemfile.lock
+# Gemfile.lock is tracked for Nix bundlerEnv
 
 # Jekyll cache
 .jekyll-cache
@@ -25,3 +25,7 @@ package-lock.json
 # Misc
 _sass/vendors
 assets/js/dist
+
+# Nix stuff
+/result
+/.direnv
