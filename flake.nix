@@ -20,31 +20,18 @@
 
       ruby = pkgs.ruby_3_3;
 
-      # Pure Nix gem environment from Gemfile.lock
-      gems = pkgs.bundlerEnv {
-        name = "jekyll-blog-gems";
-        inherit ruby;
-        gemdir = ./.;
-        groups = ["default"];
-        # Skip platform-specific gems that cause hash mismatches
-        ignoreCollisions = true;
-      };
-
-      # Wrapped Jekyll with all gems
+      # Jekyll wrapper that uses bundler
       jekyllWrapped = pkgs.writeShellScriptBin "jekyll" ''
-        export PATH="${gems}/bin:$PATH"
-        exec ${gems}/bin/jekyll "$@"
+        export PATH="${ruby}/bin:${pkgs.bundler}/bin:$PATH"
+        exec bundle exec jekyll "$@"
       '';
     in {
       # nix develop - Development shell
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
           # Ruby
-          gems
           ruby
-          # Plugin management
           bundler
-          bundix
           # For running tools
           nodejs-slim
           pnpm
@@ -80,7 +67,7 @@
             cd "$(${pkgs.git}/bin/git rev-parse --show-toplevel 2>/dev/null || pwd)"
 
             # Start Jekyll in background and save PID
-            nohup ${gems}/bin/jekyll serve \
+            nohup ${pkgs.bundler}/bin/bundle exec jekyll serve \
               --host 0.0.0.0 \
               --livereload \
               --incremental \
@@ -173,7 +160,7 @@
           type = "app";
           program = "${pkgs.writeShellScriptBin "jekyll-build" ''
             cd "$(${pkgs.git}/bin/git rev-parse --show-toplevel 2>/dev/null || pwd)"
-            exec ${gems}/bin/jekyll build
+            exec ${pkgs.bundler}/bin/bundle exec jekyll build
           ''}/bin/jekyll-build";
         };
 
@@ -181,7 +168,7 @@
           type = "app";
           program = "${pkgs.writeShellScriptBin "jekyll-clean" ''
             cd "$(${pkgs.git}/bin/git rev-parse --show-toplevel 2>/dev/null || pwd)"
-            exec ${gems}/bin/jekyll clean
+            exec ${pkgs.bundler}/bin/bundle exec jekyll clean
           ''}/bin/jekyll-clean";
         };
 

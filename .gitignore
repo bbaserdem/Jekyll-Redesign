@@ -1,7 +1,7 @@
 # Bundler cache
 .bundle
 vendor
-# Gemfile.lock is tracked for Nix bundlerEnv
+Gemfile.lock
 
 # Jekyll cache
 .jekyll-cache
@@ -14,6 +14,7 @@ _site
 # NPM dependencies
 node_modules
 package-lock.json
+pnpm-lock.yaml
 
 # IDE configurations
 .idea
